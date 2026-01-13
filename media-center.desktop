@@ -2,7 +2,7 @@
 Type=Application
 Name=Media Center
 Comment=Launch Media Center Dashboard
-Exec=/home/user/.config/autostart/media-center.sh
+Exec=/home/user/.local/bin/media-center.sh
 Terminal=false
 X-GNOME-Autostart-enabled=true
-X-GNOME-Autostart-Delay=2
+X-GNOME-Autostart-Delay=5

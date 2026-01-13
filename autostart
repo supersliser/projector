@@ -1,20 +1,20 @@
 #!/bin/bash
 
-# Wait for GNOME to fully initialize
-sleep 3
+export HOME=/home/user
+export DISPLAY=:0
 
-# 0. Pull latest configuration updates, run setup, and rebuild system
-(cd ~/Documents/projector && git pull && bash setup.sh && sudo nixos-rebuild switch) &
+# Wait for GNOME/display to fully initialize
+sleep 5
+
+# 0. Pull latest configuration updates in background (don't block startup)
+(cd /home/user/Documents/projector && git pull && bash setup.sh) &
 
 # 1. Set volume to 100% initially (optional)
 pactl set-sink-volume @DEFAULT_SINK@ 100% &
 
-# 2. Launch Jellyfin Player in background (optional, if you use it)
-# jellyfinmediaplayer &
+# 2. Start the command server for system controls (power off, restart, etc.)
+/usr/bin/python3 /home/user/command-server.py &
 
-# 3. Start the command server for system controls (power off, restart, etc.)
-python3 ~/command-server.py &
-
-# 4. Launch Firefox in Kiosk mode pointing to our dashboard
+# 3. Launch Firefox in Kiosk mode pointing to our dashboard
 # --kiosk forces fullscreen. --new-window ensures a fresh session.
-firefox --kiosk --new-window "file:///home/user/dashboard.html" &
+/usr/bin/firefox --kiosk --new-window "file:///home/user/dashboard.html" &
