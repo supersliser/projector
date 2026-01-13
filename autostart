@@ -1,10 +1,13 @@
 #!/bin/bash
 
 # Set volume to 100%
-pactl set-sink-volume @DEFAULT_SINK@ 100%
+pactl set-sink-volume @DEFAULT_SINK@ 100% &
 
 # Start the command server for system controls
 python3 /home/user/command-server.py &
 
 # Launch Firefox in Kiosk mode pointing to our dashboard
-firefox --kiosk --new-window "file:///home/user/dashboard.html"
+firefox --kiosk --new-window "file:///home/user/dashboard.html" &
+
+# Exit successfully so systemd knows we're done
+exit 0

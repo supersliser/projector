@@ -89,8 +89,7 @@
     after = [ "graphical-session.target" ];
     partOf = [ "graphical-session.target" ];
     serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
+      Type = "forking";
       ExecStartPre = "${pkgs.coreutils}/bin/sleep 5";
       ExecStart = "${pkgs.bash}/bin/bash /home/user/media-center.sh";
     };
