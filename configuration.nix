@@ -104,9 +104,6 @@
       RestartSec = 5;
       Environment = "DISPLAY=:0";
     };
-    Install = {
-      WantedBy = [ "graphical-session.target" ];
-    };
   };
 
   systemd.user.services.command-server = {
@@ -120,9 +117,6 @@
       ExecStart = "${pkgs.python3}/bin/python3 /home/user/command-server.py";
       Restart = "on-failure";
       RestartSec = 5;
-    };
-    Install = {
-      WantedBy = [ "graphical-session.target" ];
     };
   };
 
@@ -138,9 +132,6 @@
       Restart = "on-failure";
       RestartSec = 5;
       Environment = "DISPLAY=:0";
-    };
-    Install = {
-      WantedBy = [ "graphical-session.target" ];
     };
   };
 
