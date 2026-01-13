@@ -9,6 +9,9 @@ pactl set-sink-volume @DEFAULT_SINK@ 100% &
 # 2. Launch Jellyfin Player in background (optional, if you use it)
 # jellyfinmediaplayer &
 
-# 3. Launch Firefox in Kiosk mode pointing to our dashboard
+# 3. Start the command server for system controls (power off, restart, etc.)
+python3 ~/command-server.py &
+
+# 4. Launch Firefox in Kiosk mode pointing to our dashboard
 # --kiosk forces fullscreen. --new-window ensures a fresh session.
 firefox --kiosk --new-window "file:///home/user/dashboard.html" &
