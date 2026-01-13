@@ -56,18 +56,18 @@
   # We use Openbox because it is lighter than GNOME/KDE and won't interfere with the browser.
   services.xserver = {
     enable = true;
-    
-    # Auto-login configuration
-    displayManager.lightdm = {
-      enable = true;
-      autoLogin = {
-        enable = true;
-        user = "user";
-      };
-    };
-    
     windowManager.openbox.enable = true;
   };
+
+  services.displayManager = {
+    defaultSession = "openbox";
+    autoLogin = {
+      enable = true;
+      user = "user";
+    };
+  };
+
+  services.xserver.displayManager.lightdm.enable = true;
 
   # 6. Hide the mouse cursor after inaction (Clutter-free TV experience)
   services.xserver.displayManager.sessionCommands = ''
