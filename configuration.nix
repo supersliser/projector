@@ -92,6 +92,7 @@
 
   # Autostart services using systemd user services (more reliable than XDG autostart with autologin)
   systemd.user.services.firefox-media-center = {
+    enable = true;
     Unit.Description = "Firefox Media Center";
     Unit.After = [ "graphical-session-pre.target" ];
     Unit.PartOf = [ "graphical-session.target" ];
@@ -103,6 +104,7 @@
   };
 
   systemd.user.services.command-server = {
+    enable = true;
     Unit.Description = "Command Server";
     Unit.After = [ "graphical-session-pre.target" ];
     Unit.PartOf = [ "graphical-session.target" ];
@@ -113,6 +115,7 @@
   };
 
   systemd.user.services.unclutter = {
+    enable = true;
     Unit.Description = "Unclutter Mouse";
     Unit.After = [ "graphical-session-pre.target" ];
     Unit.PartOf = [ "graphical-session.target" ];
