@@ -90,41 +90,20 @@
   systemd.services."getty@tty1".enable = false;
   systemd.services."autovt@tty1".enable = false;
 
-  # Autostart services using systemd user services (more reliable than XDG autostart with autologin)
-  systemd.user.services.firefox-media-center = {
-    enable = true;
-    Unit.Description = "Firefox Media Center";
-    Unit.After = [ "graphical-session-pre.target" ];
-    Unit.PartOf = [ "graphical-session.target" ];
-    Service.Type = "simple";
-    Service.ExecStart = "${pkgs.firefox}/bin/firefox --kiosk file:///home/user/dashboard.html";
-    Service.Restart = "on-failure";
-    Service.RestartSec = 5;
-    Service.Environment = "DISPLAY=:0";
-  };
+  # Create startup script for autostarting applications
+  environment.etc."profile.d/media-center-startup.sh".text = ''
+    #!/bin/bash
+    if [ "$(id -u)" -ne 0 ]; then
+      # Only run for non-root users
+      ${pkgs.firefox}/bin/firefox --kiosk file:///home/user/dashboard.html &
+      sleep 2
+      ${pkgs.python3}/bin/python3 /home/user/command-server.py &
+      ${pkgs.unclutter}/bin/unclutter -idle 3 &
+    fi
+  '';
 
-  systemd.user.services.command-server = {
-    enable = true;
-    Unit.Description = "Command Server";
-    Unit.After = [ "graphical-session-pre.target" ];
-    Unit.PartOf = [ "graphical-session.target" ];
-    Service.Type = "simple";
-    Service.ExecStart = "${pkgs.python3}/bin/python3 /home/user/command-server.py";
-    Service.Restart = "on-failure";
-    Service.RestartSec = 5;
-  };
-
-  systemd.user.services.unclutter = {
-    enable = true;
-    Unit.Description = "Unclutter Mouse";
-    Unit.After = [ "graphical-session-pre.target" ];
-    Unit.PartOf = [ "graphical-session.target" ];
-    Service.Type = "simple";
-    Service.ExecStart = "${pkgs.unclutter}/bin/unclutter -idle 3";
-    Service.Restart = "on-failure";
-    Service.RestartSec = 5;
-    Service.Environment = "DISPLAY=:0";
-  };
+  # Enable SSH for debugging (optional)
+  services.openssh.enable = true;
 
   system.stateVersion = "24.11"; 
 }
