@@ -49,6 +49,7 @@
       jellyfin-media-player # Excellent for local media (replaces Kodi)
       git
       vim
+      python3       # For command server
     ];
   };
 
@@ -80,6 +81,20 @@
   services.xserver.displayManager.sessionCommands = ''
     ${pkgs.unclutter}/bin/unclutter -idle 3 &
   '';
+
+  # 7. Media Center Autostart - System service that runs after login
+  systemd.user.services.media-center = {
+    description = "Media Center Dashboard";
+    wantedBy = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStartPre = "${pkgs.coreutils}/bin/sleep 5";
+      ExecStart = "${pkgs.bash}/bin/bash /home/user/media-center.sh";
+    };
+  };
 
   system.stateVersion = "24.11"; 
 }

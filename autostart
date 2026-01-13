@@ -1,20 +1,10 @@
 #!/bin/bash
 
-export HOME=/home/user
-export DISPLAY=:0
+# Set volume to 100%
+pactl set-sink-volume @DEFAULT_SINK@ 100%
 
-# Wait for GNOME/display to fully initialize
-sleep 5
+# Start the command server for system controls
+python3 /home/user/command-server.py &
 
-# 0. Pull latest configuration updates in background (don't block startup)
-(cd /home/user/Documents/projector && git pull && bash setup.sh) &
-
-# 1. Set volume to 100% initially (optional)
-pactl set-sink-volume @DEFAULT_SINK@ 100% &
-
-# 2. Start the command server for system controls (power off, restart, etc.)
-/usr/bin/python3 /home/user/command-server.py &
-
-# 3. Launch Firefox in Kiosk mode pointing to our dashboard
-# --kiosk forces fullscreen. --new-window ensures a fresh session.
-/usr/bin/firefox --kiosk --new-window "file:///home/user/dashboard.html" &
+# Launch Firefox in Kiosk mode pointing to our dashboard
+firefox --kiosk --new-window "file:///home/user/dashboard.html"
