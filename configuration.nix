@@ -95,7 +95,7 @@
     [Desktop Entry]
     Type=Application
     Name=Media Center
-    Exec=sh -c "sleep 3 && firefox --kiosk file:///home/user/dashboard.html"
+    Exec=${pkgs.bash}/bin/bash -c "sleep 3 && ${pkgs.firefox}/bin/firefox --kiosk file:///home/user/dashboard.html"
     X-GNOME-Autostart-enabled=true
   '';
 
@@ -104,7 +104,7 @@
     [Desktop Entry]
     Type=Application
     Name=Command Server
-    Exec=python3 /home/user/command-server.py
+    Exec=${pkgs.python3}/bin/python3 /home/user/command-server.py
     X-GNOME-Autostart-enabled=true
   '';
 
@@ -113,7 +113,7 @@
     [Desktop Entry]
     Type=Application
     Name=Unclutter
-    Exec=unclutter -idle 3
+    Exec=${pkgs.unclutter}/bin/unclutter -idle 3
     X-GNOME-Autostart-enabled=true
   '';
 
