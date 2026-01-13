@@ -44,6 +44,15 @@ class CommandHandler(BaseHTTPRequestHandler):
                            stdout=subprocess.DEVNULL,
                            stderr=subprocess.DEVNULL)
         
+        elif path == 'steam':
+            self.wfile.write(b'Opening Steam...')
+            env = os.environ.copy()
+            subprocess.Popen(['steam'], 
+                           env=env,
+                           start_new_session=True,
+                           stdout=subprocess.DEVNULL,
+                           stderr=subprocess.DEVNULL)
+        
         else:
             self.wfile.write(b'Unknown command')
 

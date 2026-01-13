@@ -49,8 +49,12 @@
       vim
       python3
       unclutter
+      steam
     ];
   };
+
+  # Enable Steam hardware support
+  programs.steam.enable = true;
 
   # Firefox with policies - auto-opens dashboard as homepage
   programs.firefox = {
