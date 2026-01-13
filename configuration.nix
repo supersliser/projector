@@ -60,7 +60,7 @@
   };
 
   services.displayManager = {
-    defaultSession = "openbox";
+    defaultSession = "none+openbox";
     autoLogin = {
       enable = true;
       user = "user";
