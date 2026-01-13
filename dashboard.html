@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body { background-color: #141414; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
+  h1 { font-size: 2em; margin-bottom: 40px; text-transform: uppercase; letter-spacing: 2px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+  .card {
+    background: #2f2f2f; width: 300px; height: 160px; display: flex;
+    align-items: center; justify-content: center; border-radius: 10px;
+    text-decoration: none; color: white; font-size: 24px; font-weight: bold;
+    border: 3px solid transparent; transition: transform 0.2s, border-color 0.2s;
+  }
+  .card:hover, .card:focus { transform: scale(1.05); border-color: #e50914; outline: none; background: #404040; cursor: pointer; }
+  /* Specific colors for services */
+  .netflix:focus { border-color: #E50914; }
+  .disney:focus { border-color: #113CCF; }
+  .youtube:focus { border-color: #FF0000; }
+</style>
+</head>
+<body>
+  <h1>Media Center</h1>
+  <div class="grid">
+    <a href="https://www.netflix.com/browse" class="card netflix">Netflix</a>
+    <a href="https://www.disneyplus.com" class="card disney">Disney+</a>
+    <a href="https://www.amazon.co.uk/gp/video/storefront" class="card">Prime Video</a>
+    <a href="https://www.bbc.co.uk/iplayer" class="card">BBC iPlayer</a>
+    <a href="https://www.youtube.com/tv" class="card youtube">YouTube TV</a>
+    <a href="javascript:window.close();" class="card">Exit to Desktop</a> 
+  </div>
+  <script>
+    // Focus the first element on load for remote control readiness
+    document.querySelector('.card').focus();
+  </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+# 0. Pull latest configuration updates, run setup, and rebuild system
+(cd ~/Documents/projector && git pull && bash setup.sh && sudo nixos-rebuild switch) &
+
+# 1. Set volume to 100% initially (optional)
+pactl set-sink-volume @DEFAULT_SINK@ 100% &
+
+# 2. Launch Jellyfin Player in background (optional, if you use it)
+# jellyfinmediaplayer &
+
+# 3. Launch Firefox in Kiosk mode pointing to our dashboard
+# --kiosk forces fullscreen. --new-window ensures a fresh session.
+firefox --kiosk --new-window "file:///home/media/dashboard.html" &
