@@ -92,47 +92,35 @@
 
   # Autostart services using systemd user services (more reliable than XDG autostart with autologin)
   systemd.user.services.firefox-media-center = {
-    Unit = {
-      Description = "Firefox Media Center";
-      After = [ "graphical-session-pre.target" ];
-      PartOf = [ "graphical-session.target" ];
-    };
-    Service = {
-      Type = "simple";
-      ExecStart = "${pkgs.firefox}/bin/firefox --kiosk file:///home/user/dashboard.html";
-      Restart = "on-failure";
-      RestartSec = 5;
-      Environment = "DISPLAY=:0";
-    };
+    Unit.Description = "Firefox Media Center";
+    Unit.After = [ "graphical-session-pre.target" ];
+    Unit.PartOf = [ "graphical-session.target" ];
+    Service.Type = "simple";
+    Service.ExecStart = "${pkgs.firefox}/bin/firefox --kiosk file:///home/user/dashboard.html";
+    Service.Restart = "on-failure";
+    Service.RestartSec = 5;
+    Service.Environment = "DISPLAY=:0";
   };
 
   systemd.user.services.command-server = {
-    Unit = {
-      Description = "Command Server";
-      After = [ "graphical-session-pre.target" ];
-      PartOf = [ "graphical-session.target" ];
-    };
-    Service = {
-      Type = "simple";
-      ExecStart = "${pkgs.python3}/bin/python3 /home/user/command-server.py";
-      Restart = "on-failure";
-      RestartSec = 5;
-    };
+    Unit.Description = "Command Server";
+    Unit.After = [ "graphical-session-pre.target" ];
+    Unit.PartOf = [ "graphical-session.target" ];
+    Service.Type = "simple";
+    Service.ExecStart = "${pkgs.python3}/bin/python3 /home/user/command-server.py";
+    Service.Restart = "on-failure";
+    Service.RestartSec = 5;
   };
 
   systemd.user.services.unclutter = {
-    Unit = {
-      Description = "Unclutter Mouse";
-      After = [ "graphical-session-pre.target" ];
-      PartOf = [ "graphical-session.target" ];
-    };
-    Service = {
-      Type = "simple";
-      ExecStart = "${pkgs.unclutter}/bin/unclutter -idle 3";
-      Restart = "on-failure";
-      RestartSec = 5;
-      Environment = "DISPLAY=:0";
-    };
+    Unit.Description = "Unclutter Mouse";
+    Unit.After = [ "graphical-session-pre.target" ];
+    Unit.PartOf = [ "graphical-session.target" ];
+    Service.Type = "simple";
+    Service.ExecStart = "${pkgs.unclutter}/bin/unclutter -idle 3";
+    Service.Restart = "on-failure";
+    Service.RestartSec = 5;
+    Service.Environment = "DISPLAY=:0";
   };
 
   system.stateVersion = "24.11"; 
