@@ -43,7 +43,6 @@
     description = "Media Center User";
     extraGroups = [ "networkmanager" "wheel" "audio" "video" ];
     packages = with pkgs; [
-      firefox
       google-chrome # Fallback if Firefox DRM acts up
       pavucontrol   # Audio control GUI
       jellyfin-media-player # Excellent for local media (replaces Kodi)
@@ -53,7 +52,24 @@
     ];
   };
 
-  # 5. Display Server (GNOME Desktop)
+  # 5. Firefox with policies - auto-opens dashboard
+  programs.firefox = {
+    enable = true;
+    policies = {
+      Homepage = {
+        URL = "file:///home/user/dashboard.html";
+        Locked = false;
+        StartPage = "homepage";
+      };
+      OverrideFirstRunPage = "file:///home/user/dashboard.html";
+      OverridePostUpdatePage = "file:///home/user/dashboard.html";
+      NewTabPage = false;
+      DisableTelemetry = true;
+      DontCheckDefaultBrowser = true;
+    };
+  };
+
+  # 6. Display Server (GNOME Desktop)
   # Using GNOME for full desktop functionality when needed
   services.xserver = {
     enable = true;
@@ -77,21 +93,30 @@
   systemd.services."getty@tty1".enable = false;
   systemd.services."autovt@tty1".enable = false;
 
-  # 6. Hide the mouse cursor after inaction (Clutter-free TV experience)
+  # 7. Hide the mouse cursor after inaction (Clutter-free TV experience)
   services.xserver.displayManager.sessionCommands = ''
     ${pkgs.unclutter}/bin/unclutter -idle 3 &
   '';
 
-  # 7. Media Center Autostart - System service that runs after login
-  systemd.user.services.media-center = {
-    description = "Media Center Dashboard";
+  # 8. GNOME autostart for Firefox in kiosk mode
+  environment.etc."xdg/autostart/media-center.desktop".text = ''
+    [Desktop Entry]
+    Type=Application
+    Name=Media Center
+    Exec=firefox --kiosk
+    X-GNOME-Autostart-enabled=true
+    X-GNOME-Autostart-Delay=3
+  '';
+
+  # 9. Command server for power controls
+  systemd.user.services.command-server = {
+    description = "Media Center Command Server";
     wantedBy = [ "graphical-session.target" ];
     after = [ "graphical-session.target" ];
-    partOf = [ "graphical-session.target" ];
     serviceConfig = {
-      Type = "forking";
-      ExecStartPre = "${pkgs.coreutils}/bin/sleep 5";
-      ExecStart = "${pkgs.bash}/bin/bash /home/user/media-center.sh";
+      Type = "simple";
+      ExecStart = "${pkgs.python3}/bin/python3 /home/user/command-server.py";
+      Restart = "on-failure";
     };
   };
 
