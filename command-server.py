@@ -37,7 +37,9 @@ class CommandHandler(BaseHTTPRequestHandler):
         elif path == 'firefox':
             self.wfile.write(b'Opening Firefox...')
             # Open Firefox in normal mode (not kiosk)
+            env = os.environ.copy()
             subprocess.Popen(['firefox', '--new-window'], 
+                           env=env,
                            start_new_session=True,
                            stdout=subprocess.DEVNULL,
                            stderr=subprocess.DEVNULL)
@@ -48,4 +50,5 @@ class CommandHandler(BaseHTTPRequestHandler):
 if __name__ == '__main__':
     server = HTTPServer(('127.0.0.1', 8765), CommandHandler)
     print('Command server running on http://localhost:8765')
+    server.serve_forever()
     server.serve_forever()

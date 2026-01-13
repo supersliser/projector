@@ -6,7 +6,7 @@
       ./hardware-configuration.nix
     ];
 
-  # Bootloader (Adjust if you use GRUB)
+  # Bootloader
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -14,20 +14,19 @@
   networking.hostName = "nixos-media";
   networking.networkmanager.enable = true;
 
-  # 1. Enable Unfree Packages (Crucial for Netflix/Widevine DRM)
+  # Enable Unfree Packages (Crucial for Netflix/Widevine DRM)
   nixpkgs.config.allowUnfree = true;
 
-  # 2. Graphics & Hardware Acceleration
+  # Graphics & Hardware Acceleration
   hardware.graphics = {
     enable = true;
     extraPackages = with pkgs; [
-      intel-media-driver # For Intel iGPUs
+      intel-media-driver
       libvdpau-va-gl
-      # vaapiVdpau # Uncomment if using older NVIDIA
     ];
   };
 
-  # 3. Sound (PipeWire is modern and stable)
+  # Sound (PipeWire)
   security.rtkit.enable = true;
   security.sudo.wheelNeedsPassword = false;
   services.pipewire = {
@@ -37,22 +36,23 @@
     pulse.enable = true;
   };
 
-  # 4. Auto-Login User setup
+  # User setup
   users.users.user = {
     isNormalUser = true;
     description = "Media Center User";
     extraGroups = [ "networkmanager" "wheel" "audio" "video" ];
     packages = with pkgs; [
-      google-chrome # Fallback if Firefox DRM acts up
-      pavucontrol   # Audio control GUI
-      jellyfin-media-player # Excellent for local media (replaces Kodi)
+      google-chrome
+      pavucontrol
+      jellyfin-media-player
       git
       vim
-      python3       # For command server
+      python3
+      unclutter
     ];
   };
 
-  # 5. Firefox with policies - auto-opens dashboard
+  # Firefox with policies - auto-opens dashboard as homepage
   programs.firefox = {
     enable = true;
     policies = {
@@ -63,17 +63,19 @@
       };
       OverrideFirstRunPage = "file:///home/user/dashboard.html";
       OverridePostUpdatePage = "file:///home/user/dashboard.html";
-      NewTabPage = false;
       DisableTelemetry = true;
       DontCheckDefaultBrowser = true;
     };
   };
 
-  # 6. Display Server (GNOME Desktop)
-  # Using GNOME for full desktop functionality when needed
+  # GNOME Desktop
   services.xserver = {
     enable = true;
     desktopManager.gnome.enable = true;
+    displayManager.gdm = {
+      enable = true;
+      autoSuspend = false;
+    };
   };
 
   services.displayManager = {
@@ -84,41 +86,36 @@
     };
   };
 
-  services.xserver.displayManager.gdm = {
-    enable = true;
-    autoSuspend = false;  # Prevent auto-suspend for media center use
-  };
-
   # Workaround for GNOME autologin
   systemd.services."getty@tty1".enable = false;
   systemd.services."autovt@tty1".enable = false;
 
-  # 7. Hide the mouse cursor after inaction (Clutter-free TV experience)
-  services.xserver.displayManager.sessionCommands = ''
-    ${pkgs.unclutter}/bin/unclutter -idle 3 &
-  '';
-
-  # 8. GNOME autostart for Firefox in kiosk mode
+  # Autostart Firefox in kiosk mode via XDG autostart
   environment.etc."xdg/autostart/media-center.desktop".text = ''
     [Desktop Entry]
     Type=Application
     Name=Media Center
-    Exec=firefox --kiosk
+    Exec=sh -c "sleep 3 && firefox --kiosk file:///home/user/dashboard.html"
     X-GNOME-Autostart-enabled=true
-    X-GNOME-Autostart-Delay=3
   '';
 
-  # 9. Command server for power controls
-  systemd.user.services.command-server = {
-    description = "Media Center Command Server";
-    wantedBy = [ "graphical-session.target" ];
-    after = [ "graphical-session.target" ];
-    serviceConfig = {
-      Type = "simple";
-      ExecStart = "${pkgs.python3}/bin/python3 /home/user/command-server.py";
-      Restart = "on-failure";
-    };
-  };
+  # Autostart command server
+  environment.etc."xdg/autostart/command-server.desktop".text = ''
+    [Desktop Entry]
+    Type=Application
+    Name=Command Server
+    Exec=python3 /home/user/command-server.py
+    X-GNOME-Autostart-enabled=true
+  '';
+
+  # Autostart unclutter to hide mouse
+  environment.etc."xdg/autostart/unclutter.desktop".text = ''
+    [Desktop Entry]
+    Type=Application
+    Name=Unclutter
+    Exec=unclutter -idle 3
+    X-GNOME-Autostart-enabled=true
+  '';
 
   system.stateVersion = "24.11"; 
 }
