@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # 0. Pull latest configuration updates, run setup, and rebuild system
 (cd ~/Documents/projector && git pull && bash setup.sh && sudo nixos-rebuild switch) &
 
@@ -9,4 +11,4 @@ pactl set-sink-volume @DEFAULT_SINK@ 100% &
 
 # 3. Launch Firefox in Kiosk mode pointing to our dashboard
 # --kiosk forces fullscreen. --new-window ensures a fresh session.
-firefox --kiosk --new-window "file:///home/media/dashboard.html" &
+firefox --kiosk --new-window "file:///home/user/dashboard.html" &

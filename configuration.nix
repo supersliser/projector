@@ -47,6 +47,8 @@
       google-chrome # Fallback if Firefox DRM acts up
       pavucontrol   # Audio control GUI
       jellyfin-media-player # Excellent for local media (replaces Kodi)
+      git
+      vim
     ];
   };
 
