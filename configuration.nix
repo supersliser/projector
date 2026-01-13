@@ -52,22 +52,29 @@
     ];
   };
 
-  # 5. Display Server (X11 + Openbox)
-  # We use Openbox because it is lighter than GNOME/KDE and won't interfere with the browser.
+  # 5. Display Server (GNOME Desktop)
+  # Using GNOME for full desktop functionality when needed
   services.xserver = {
     enable = true;
-    windowManager.openbox.enable = true;
+    desktopManager.gnome.enable = true;
   };
 
   services.displayManager = {
-    defaultSession = "none+openbox";
+    defaultSession = "gnome";
     autoLogin = {
       enable = true;
       user = "user";
     };
   };
 
-  services.xserver.displayManager.lightdm.enable = true;
+  services.xserver.displayManager.gdm = {
+    enable = true;
+    autoSuspend = false;  # Prevent auto-suspend for media center use
+  };
+
+  # Workaround for GNOME autologin
+  systemd.services."getty@tty1".enable = false;
+  systemd.services."autovt@tty1".enable = false;
 
   # 6. Hide the mouse cursor after inaction (Clutter-free TV experience)
   services.xserver.displayManager.sessionCommands = ''

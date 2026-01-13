@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Wait for GNOME to fully initialize
+sleep 3
+
 # 0. Pull latest configuration updates, run setup, and rebuild system
 (cd ~/Documents/projector && git pull && bash setup.sh && sudo nixos-rebuild switch) &
 
