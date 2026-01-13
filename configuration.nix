@@ -90,32 +90,59 @@
   systemd.services."getty@tty1".enable = false;
   systemd.services."autovt@tty1".enable = false;
 
-  # Autostart Firefox in kiosk mode via XDG autostart
-  environment.etc."xdg/autostart/media-center.desktop".text = ''
-    [Desktop Entry]
-    Type=Application
-    Name=Media Center
-    Exec=${pkgs.bash}/bin/bash -c "sleep 3 && ${pkgs.firefox}/bin/firefox --kiosk file:///home/user/dashboard.html"
-    X-GNOME-Autostart-enabled=true
-  '';
+  # Autostart services using systemd user services (more reliable than XDG autostart with autologin)
+  systemd.user.services.firefox-media-center = {
+    Unit = {
+      Description = "Firefox Media Center";
+      After = [ "graphical-session-pre.target" ];
+      PartOf = [ "graphical-session.target" ];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.firefox}/bin/firefox --kiosk file:///home/user/dashboard.html";
+      Restart = "on-failure";
+      RestartSec = 5;
+      Environment = "DISPLAY=:0";
+    };
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
+    };
+  };
 
-  # Autostart command server
-  environment.etc."xdg/autostart/command-server.desktop".text = ''
-    [Desktop Entry]
-    Type=Application
-    Name=Command Server
-    Exec=${pkgs.python3}/bin/python3 /home/user/command-server.py
-    X-GNOME-Autostart-enabled=true
-  '';
+  systemd.user.services.command-server = {
+    Unit = {
+      Description = "Command Server";
+      After = [ "graphical-session-pre.target" ];
+      PartOf = [ "graphical-session.target" ];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.python3}/bin/python3 /home/user/command-server.py";
+      Restart = "on-failure";
+      RestartSec = 5;
+    };
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
+    };
+  };
 
-  # Autostart unclutter to hide mouse
-  environment.etc."xdg/autostart/unclutter.desktop".text = ''
-    [Desktop Entry]
-    Type=Application
-    Name=Unclutter
-    Exec=${pkgs.unclutter}/bin/unclutter -idle 3
-    X-GNOME-Autostart-enabled=true
-  '';
+  systemd.user.services.unclutter = {
+    Unit = {
+      Description = "Unclutter Mouse";
+      After = [ "graphical-session-pre.target" ];
+      PartOf = [ "graphical-session.target" ];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.unclutter}/bin/unclutter -idle 3";
+      Restart = "on-failure";
+      RestartSec = 5;
+      Environment = "DISPLAY=:0";
+    };
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
+    };
+  };
 
   system.stateVersion = "24.11"; 
 }
